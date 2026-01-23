@@ -21,6 +21,10 @@ const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 const artistsRoutes = require("./routes/artists.routes");
 app.use("/artists", artistsRoutes);
+const eventsRoutes = require("./routes/events.routes");
+app.use("/events", eventsRoutes);
+const promotersRoutes = require("./routes/promoters.routes");
+app.use("/promoters", promotersRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
