@@ -10,7 +10,7 @@ router.post("/create", (req, res) => {
         .json({ message: "Event created successfully!", data: eventCreated });
     })
     .catch((err) => {
-      res.status(500).json({ errorMesage: err });
+      res.status(500).json({ errorMessage: err });
     });
 });
 

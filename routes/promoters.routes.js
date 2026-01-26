@@ -11,7 +11,7 @@ router.post("/create", (req, res) => {
       });
     })
     .catch((err) => {
-      res.status(500).json({ errorMesage: err });
+      res.status(500).json({ errorMessage: err });
     });
 });
 
