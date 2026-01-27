@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const PromoterModel = require("../models/Promoter.model");
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 //route to create a new promoter (/create)
-router.post("/create", (req, res) => {
+router.post("/create", isAuthenticated, (req, res) => {
   PromoterModel.create(req.body)
     .then((promoterCreated) => {
       res.status(201).json({
@@ -38,7 +39,7 @@ router.get("/:promoterId", async (req, res) => {
 });
 
 //Route to update a specific promoter by id (/:promoterId)
-router.put("/:promoterId", (req, res) => {
+router.put("/:promoterId", isAuthenticated, (req, res) => {
   const { promoterId } = req.params;
   PromoterModel.findByIdAndUpdate(promoterId, req.body, { new: true })
     .then((updatedPromoter) => {
@@ -52,7 +53,7 @@ router.put("/:promoterId", (req, res) => {
 });
 
 //Route to delete a specific promoter by id (/:promoterId)
-router.delete("/:promoterId", (req, res) => {
+router.delete("/:promoterId", isAuthenticated, (req, res) => {
   PromoterModel.findByIdAndDelete(req.params.promoterId)
     .then((data) => {
       console.log("Promoter deleted", data);

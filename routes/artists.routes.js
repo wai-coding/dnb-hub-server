@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const ArtistModel = require("../models/Artist.model");
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 //Route to create a new artist (/create)
-router.post("/create", (req, res) => {
+router.post("/create", isAuthenticated, (req, res) => {
   ArtistModel.create(req.body)
     .then((artistCreated) => {
       res
@@ -37,7 +38,7 @@ router.get("/:artistId", async (req, res) => {
 });
 
 //Route to update a specific artist by id (/:artistId)
-router.put("/:artistId", (req, res) => {
+router.put("/:artistId", isAuthenticated, (req, res) => {
   const { artistId } = req.params;
   ArtistModel.findByIdAndUpdate(artistId, req.body, { new: true })
     .then((updatedArtist) => {
@@ -51,7 +52,7 @@ router.put("/:artistId", (req, res) => {
 });
 
 //Route to delete a specific artist by id (/:artistId)
-router.delete("/:artistId", (req, res) => {
+router.delete("/:artistId", isAuthenticated, (req, res) => {
   ArtistModel.findByIdAndDelete(req.params.artistId)
     .then((data) => {
       console.log("Artist deleted", data);

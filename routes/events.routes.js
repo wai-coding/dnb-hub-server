@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const EventModel = require("../models/Event.model");
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 //route to create a new event (/create)
-router.post("/create", (req, res) => {
+router.post("/create", isAuthenticated, (req, res) => {
   const eventData = { ...req.body };
   if (eventData.promoter === "") {
     eventData.promoter = null;
@@ -41,7 +42,7 @@ router.get("/:eventId", async (req, res) => {
 });
 
 //Route to update a specific event by id (/:eventId)
-router.put("/:eventId", (req, res) => {
+router.put("/:eventId", isAuthenticated, (req, res) => {
   const { eventId } = req.params;
   const eventData = { ...req.body };
   if (eventData.promoter === "") {
@@ -61,7 +62,7 @@ router.put("/:eventId", (req, res) => {
 });
 
 //Route to delete a specific event by id (/:eventId)
-router.delete("/:eventId", (req, res) => {
+router.delete("/:eventId", isAuthenticated, (req, res) => {
   EventModel.findByIdAndDelete(req.params.eventId)
     .then((data) => {
       console.log("Event deleted", data);

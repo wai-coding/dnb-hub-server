@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 function isAuthenticated(req, res, next) {
+  if (!req.headers.authorization) {
+    return res.status(401).json({ errorMessage: "No authorization header." });
+  }
   if (
     req.headers.authorization.split(" ")[0] === "Bearer" &&
     req.headers.authorization.split(" ")[1]
