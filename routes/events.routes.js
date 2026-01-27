@@ -3,7 +3,11 @@ const EventModel = require("../models/Event.model");
 
 //route to create a new event (/create)
 router.post("/create", (req, res) => {
-  EventModel.create(req.body)
+  const eventData = { ...req.body };
+  if (eventData.promoter === "") {
+    eventData.promoter = null;
+  }
+  EventModel.create(eventData)
     .then((eventCreated) => {
       res
         .status(201)
@@ -17,7 +21,7 @@ router.post("/create", (req, res) => {
 //Route to get all events (/)
 router.get("/", async (req, res) => {
   try {
-    const data = await EventModel.find();
+    const data = await EventModel.find().populate("promoter").populate("artists");
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json({ errorMessage: err });
@@ -27,7 +31,7 @@ router.get("/", async (req, res) => {
 // Route to get a specific event by id (/:eventId)
 router.get("/:eventId", async (req, res) => {
   try {
-    const foundOneEvent = await EventModel.findById(req.params.eventId);
+    const foundOneEvent = await EventModel.findById(req.params.eventId).populate("promoter").populate("artists");
     console.log("Event found", foundOneEvent);
     res.status(200).json(foundOneEvent);
   } catch (err) {
@@ -39,7 +43,13 @@ router.get("/:eventId", async (req, res) => {
 //Route to update a specific event by id (/:eventId)
 router.put("/:eventId", (req, res) => {
   const { eventId } = req.params;
-  EventModel.findByIdAndUpdate(eventId, req.body, { new: true })
+  const eventData = { ...req.body };
+  if (eventData.promoter === "") {
+    eventData.promoter = null;
+  }
+  EventModel.findByIdAndUpdate(eventId, eventData, { new: true })
+    .populate("promoter")
+    .populate("artists")
     .then((updatedEvent) => {
       console.log("Event updated", updatedEvent);
       res.status(200).json(updatedEvent);
