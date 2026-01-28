@@ -5,7 +5,7 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
-//route to signup a new user (/signup)
+// POST /signup
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -28,7 +28,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-//route to login a user (/login)
+// POST /login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//route to verify a user (/verify)
+// GET /verify
 router.get("/verify", isAuthenticated, async (req, res) => {
   const currentLoggedInUser = await UserModel.findById(req.payload._id).select(
     "-password -email",
@@ -65,13 +65,13 @@ router.get("/verify", isAuthenticated, async (req, res) => {
   res.status(200).json({ message: "Token is valid.", currentLoggedInUser });
 });
 
-//route to update user profile (/profile)
+// PUT /profile
 router.put("/profile", isAuthenticated, async (req, res) => {
   try {
     const userId = req.payload._id;
     const { username, profilePicture } = req.body;
 
-    // Build update object with only allowed fields (ignore empty strings)
+    // Only update non-empty fields
     const updateData = {};
     if (username && username.trim() !== "") {
       updateData.username = username.trim();
@@ -79,11 +79,9 @@ router.put("/profile", isAuthenticated, async (req, res) => {
     if (profilePicture && profilePicture.trim() !== "") {
       updateData.profilePicture = profilePicture.trim();
     } else if (profilePicture === "") {
-      // Allow clearing profile picture
       updateData.profilePicture = "";
     }
 
-    // If no valid fields to update
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ errorMessage: "No valid fields to update." });
     }

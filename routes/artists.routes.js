@@ -2,7 +2,7 @@ const router = require("express").Router();
 const ArtistModel = require("../models/Artist.model");
 const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
-//Route to create a new artist (/create)
+// POST /create
 router.post("/create", isAuthenticated, (req, res) => {
   if (req.body.image && req.body.image.trim() === "") {
     delete req.body.image;
@@ -18,7 +18,7 @@ router.post("/create", isAuthenticated, (req, res) => {
     });
 });
 
-//Route to get all artists (/)
+// GET /
 router.get("/", async (req, res) => {
   try {
     const data = await ArtistModel.find();
@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Route to get a specific artist by id (/:artistId)
+// GET /:artistId
 router.get("/:artistId", async (req, res) => {
   try {
     const foundOneArtist = await ArtistModel.findById(req.params.artistId);
@@ -40,7 +40,7 @@ router.get("/:artistId", async (req, res) => {
   }
 });
 
-//Route to update a specific artist by id (/:artistId)
+// PUT /:artistId
 router.put("/:artistId", isAuthenticated, (req, res) => {
   const { artistId } = req.params;
   if (req.body.image && req.body.image.trim() === "") {
@@ -57,7 +57,7 @@ router.put("/:artistId", isAuthenticated, (req, res) => {
     });
 });
 
-//Route to delete a specific artist by id (/:artistId)
+// DELETE /:artistId
 router.delete("/:artistId", isAuthenticated, (req, res) => {
   ArtistModel.findByIdAndDelete(req.params.artistId)
     .then((data) => {

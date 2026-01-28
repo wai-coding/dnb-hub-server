@@ -2,7 +2,7 @@ const router = require("express").Router();
 const EventModel = require("../models/Event.model");
 const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
-//route to create a new event (/create)
+// POST /create
 router.post("/create", isAuthenticated, (req, res) => {
   const eventData = { ...req.body };
   if (eventData.promoter === "") {
@@ -22,7 +22,7 @@ router.post("/create", isAuthenticated, (req, res) => {
     });
 });
 
-//Route to get all events (/)
+// GET /
 router.get("/", async (req, res) => {
   try {
     const data = await EventModel.find().populate("promoter").populate("artists");
@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Route to get a specific event by id (/:eventId)
+// GET /:eventId
 router.get("/:eventId", async (req, res) => {
   try {
     const foundOneEvent = await EventModel.findById(req.params.eventId).populate("promoter").populate("artists");
@@ -44,7 +44,7 @@ router.get("/:eventId", async (req, res) => {
   }
 });
 
-//Route to update a specific event by id (/:eventId)
+// PUT /:eventId
 router.put("/:eventId", isAuthenticated, (req, res) => {
   const { eventId } = req.params;
   const eventData = { ...req.body };
@@ -67,7 +67,7 @@ router.put("/:eventId", isAuthenticated, (req, res) => {
     });
 });
 
-//Route to delete a specific event by id (/:eventId)
+// DELETE /:eventId
 router.delete("/:eventId", isAuthenticated, (req, res) => {
   EventModel.findByIdAndDelete(req.params.eventId)
     .then((data) => {

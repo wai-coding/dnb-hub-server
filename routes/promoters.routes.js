@@ -2,7 +2,7 @@ const router = require("express").Router();
 const PromoterModel = require("../models/Promoter.model");
 const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
-//route to create a new promoter (/create)
+// POST /create
 router.post("/create", isAuthenticated, (req, res) => {
   if (req.body.image && req.body.image.trim() === "") {
     delete req.body.image;
@@ -19,7 +19,7 @@ router.post("/create", isAuthenticated, (req, res) => {
     });
 });
 
-//Route to get all promoters (/)
+// GET /
 router.get("/", async (req, res) => {
   try {
     const data = await PromoterModel.find();
@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Route to get a specific promoter by id (/:promoterId)
+// GET /:promoterId
 router.get("/:promoterId", async (req, res) => {
   try {
     const foundOnePromoter = await PromoterModel.findById(req.params.promoterId);
@@ -41,7 +41,7 @@ router.get("/:promoterId", async (req, res) => {
   }
 });
 
-//Route to update a specific promoter by id (/:promoterId)
+// PUT /:promoterId
 router.put("/:promoterId", isAuthenticated, (req, res) => {
   const { promoterId } = req.params;
   if (req.body.image && req.body.image.trim() === "") {
@@ -58,7 +58,7 @@ router.put("/:promoterId", isAuthenticated, (req, res) => {
     });
 });
 
-//Route to delete a specific promoter by id (/:promoterId)
+// DELETE /:promoterId
 router.delete("/:promoterId", isAuthenticated, (req, res) => {
   PromoterModel.findByIdAndDelete(req.params.promoterId)
     .then((data) => {
