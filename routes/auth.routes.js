@@ -65,4 +65,44 @@ router.get("/verify", isAuthenticated, async (req, res) => {
   res.status(200).json({ message: "Token is valid.", currentLoggedInUser });
 });
 
+//route to update user profile (/profile)
+router.put("/profile", isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.payload._id;
+    const { username, profilePicture } = req.body;
+
+    // Build update object with only allowed fields (ignore empty strings)
+    const updateData = {};
+    if (username && username.trim() !== "") {
+      updateData.username = username.trim();
+    }
+    if (profilePicture && profilePicture.trim() !== "") {
+      updateData.profilePicture = profilePicture.trim();
+    } else if (profilePicture === "") {
+      // Allow clearing profile picture
+      updateData.profilePicture = "";
+    }
+
+    // If no valid fields to update
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ errorMessage: "No valid fields to update." });
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ errorMessage: "User not found." });
+    }
+
+    res.status(200).json({ message: "Profile updated.", user: updatedUser });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errorMessage: "Failed to update profile." });
+  }
+});
+
 module.exports = router;

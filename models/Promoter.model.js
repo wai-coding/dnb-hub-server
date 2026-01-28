@@ -12,8 +12,6 @@ const promoterSchema = new Schema({
   },
   image: {
     type: String,
-    default:
-      "https://img.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2200.jpg?semt=ais_hybrid&w=740&q=80",
   },
   socialmedia: {
     type: String,

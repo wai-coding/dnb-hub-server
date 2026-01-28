@@ -4,6 +4,9 @@ const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 //route to create a new promoter (/create)
 router.post("/create", isAuthenticated, (req, res) => {
+  if (req.body.image && req.body.image.trim() === "") {
+    delete req.body.image;
+  }
   PromoterModel.create(req.body)
     .then((promoterCreated) => {
       res.status(201).json({
@@ -41,6 +44,9 @@ router.get("/:promoterId", async (req, res) => {
 //Route to update a specific promoter by id (/:promoterId)
 router.put("/:promoterId", isAuthenticated, (req, res) => {
   const { promoterId } = req.params;
+  if (req.body.image && req.body.image.trim() === "") {
+    delete req.body.image;
+  }
   PromoterModel.findByIdAndUpdate(promoterId, req.body, { new: true })
     .then((updatedPromoter) => {
       console.log("Promoter updated", updatedPromoter);

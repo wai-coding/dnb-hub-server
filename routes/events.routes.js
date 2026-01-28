@@ -8,6 +8,9 @@ router.post("/create", isAuthenticated, (req, res) => {
   if (eventData.promoter === "") {
     eventData.promoter = null;
   }
+  if (eventData.image && eventData.image.trim() === "") {
+    delete eventData.image;
+  }
   EventModel.create(eventData)
     .then((eventCreated) => {
       res
@@ -47,6 +50,9 @@ router.put("/:eventId", isAuthenticated, (req, res) => {
   const eventData = { ...req.body };
   if (eventData.promoter === "") {
     eventData.promoter = null;
+  }
+  if (eventData.image && eventData.image.trim() === "") {
+    delete eventData.image;
   }
   EventModel.findByIdAndUpdate(eventId, eventData, { new: true })
     .populate("promoter")

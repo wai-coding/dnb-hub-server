@@ -4,6 +4,9 @@ const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 //Route to create a new artist (/create)
 router.post("/create", isAuthenticated, (req, res) => {
+  if (req.body.image && req.body.image.trim() === "") {
+    delete req.body.image;
+  }
   ArtistModel.create(req.body)
     .then((artistCreated) => {
       res
@@ -40,6 +43,9 @@ router.get("/:artistId", async (req, res) => {
 //Route to update a specific artist by id (/:artistId)
 router.put("/:artistId", isAuthenticated, (req, res) => {
   const { artistId } = req.params;
+  if (req.body.image && req.body.image.trim() === "") {
+    delete req.body.image;
+  }
   ArtistModel.findByIdAndUpdate(artistId, req.body, { new: true })
     .then((updatedArtist) => {
       console.log("Artist updated", updatedArtist);
