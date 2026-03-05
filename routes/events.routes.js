@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const mongoose = require("mongoose");
 const EventModel = require("../models/Event.model");
 const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
@@ -25,7 +26,20 @@ router.post("/create", isAuthenticated, (req, res) => {
 // GET /
 router.get("/", async (req, res) => {
   try {
-    const data = await EventModel.find().populate("promoter").populate("artists");
+    const filter = {};
+    if (req.query.artistId) {
+      if (!mongoose.Types.ObjectId.isValid(req.query.artistId)) {
+        return res.status(400).json({ message: "Invalid artistId" });
+      }
+      filter.artists = req.query.artistId;
+    }
+    if (req.query.promoterId) {
+      if (!mongoose.Types.ObjectId.isValid(req.query.promoterId)) {
+        return res.status(400).json({ message: "Invalid promoterId" });
+      }
+      filter.promoter = req.query.promoterId;
+    }
+    const data = await EventModel.find(filter).populate("promoter").populate("artists");
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json({ errorMessage: err });

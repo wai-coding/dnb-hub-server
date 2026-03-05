@@ -1,4 +1,4 @@
-# DNB Hub – Server (Backend)
+# DNB Hub - Server (Backend)
 
 This repository contains the **backend REST API** for the DNB Hub application.  
 It is built with **Node.js, Express and MongoDB**, and provides authentication with JWT as well as CRUD endpoints for the main entities.
